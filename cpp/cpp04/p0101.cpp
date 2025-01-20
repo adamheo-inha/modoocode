@@ -5,11 +5,6 @@ class Date {
     int year_;
     int month_;  // 1 부터 12 까지.
     int day_;    // 1 부터 31 까지.
-/* 
-    bool Month28 = (month_ == 2);
-    bool Month30 = (month_ == 4 || month_ == 6 || month_ == 9 || month_ == 11);
-    bool Month31 = (month_ == 1 || month_ == 3 || month_ == 5 || month_ == 7 || month_ == 8 || month_ == 10 || month_ == 12);
- */
     
  public:
     int Month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -36,9 +31,9 @@ class Date {
             }
         }//while 
 
-        //std::cout << Month28 << Month30 << Month31 << std::endl;
-        monthcheck = Month[month_ - 1];
 
+        monthcheck = Month[month_ - 1];
+        std::cout << monthcheck << " " << month_ << std::endl; ///////////////////////////////////////////////        
 
         std::cout << "원하시는 날짜를 숫자만 입력하세요. ";
         std::cin >> day_;
@@ -74,7 +69,7 @@ class Date {
             std::cout << maxday_ << "일을 넘지 않는 날짜를 숫자만 입력하세요. ";
             std::cin >> day_;
         }//while
-    }//void SetDate
+    }//SetDate()
 
 
     // 날짜 더하기
@@ -90,7 +85,7 @@ class Date {
                 day_ -= 30;
                 AddMonth(1);
             }
-        } else if (monthcheck == 31) {
+        } else if (monthcheck == 28) {
             while(day_ > 28) {
                 day_ -= 28;
                 AddMonth(1);
@@ -98,49 +93,73 @@ class Date {
         } else {
             std::cout << "월정 정정 해주세요." << std::endl;
         }
-    }
+        std::cout << "3 " << monthcheck << " " << month_ << std::endl;////////////////////////////////////////////
+    }//AddDay()
+
     void AddMonth(int inc) {
         month_ += inc;
-        monthcheck = Month[month_ + 1];
-        if(month_ > 12) {
-            monthcheck = Month[month_ - 1 - 12];
+        if(month_ > 11) {
             month_ -= 12;
             AddYear(1);
         }
-    }
+        monthcheck = Month[month_ - 1];
+        std::cout << "AddMonth 함수후" << monthcheck << " " << month_ << std::endl;////////////////////////////////////////////
+    }//AddMonth()
+
     void AddYear(int inc){
         year_ += inc;
-    }
+    }//AddYear()
+
     //날짜 출력
     void ShowDate() {
         std::cout << year_ << "년 " << month_ << "월 " << day_ << "일" << std::endl;
-    }    
+        std::cout << monthcheck << std::endl;
+    }//ShowDate()
 };
 
 int main() {
-    /* 
-    int day = 0;
-    int month = 0;
-    int year = 0;
- */
+    int state = 0;
+    int inc = 0;
+    int theend = 0;
     Date date;
-/* 
-    bool Month28 = (month == 2);
-    bool Month30 = (month == 4 || month == 6 || month == 9 || month == 11);
-    bool Month31 = (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12);
- */
-    // 날짜초기화
-/*     
-    std::cout << "몇 년? : ";
-    std::cin >> year;
-    std::cout << "몇 월? : ";
-    std::cin >> month;
-    std::cout << "몇 일? : ";
-    std::cin >> day;   
- */
+
     date.SetDate();
+    // 추가 및 결과 출력
+    while(1) {
+        //while 탈출 종료
+        if (theend == 1) break;
+        std::cout << "원하시는 기능을 입력하세요." << std::endl << "1번 년도 추가" << std::endl << "2번 월 추가" << std::endl << "3번 일 추가" << std::endl << "4번 날짜보기" << std::endl << "5번 종료" << std::endl;
+        std::cin >> state;
+        switch (state) {
+            case 1:
+                std::cout << "몇 년 추가 하시겠습니까? : ";
+                std::cin >> inc;
+                date.AddYear(inc);
+                date.ShowDate();
+                break;
+            case 2:
+                std::cout << "몇 달 추가 하시겠습니까? : ";
+                std::cin >> inc;
+                date.AddMonth(inc);
+                date.ShowDate();
+                break;
+            case 3:
+                std::cout << "몇 일 추가 하시겠습니까? : ";
+                std::cin >> inc;
+                date.AddDay(inc);
+                date.ShowDate();
+                break;
+            case 4:
+                 date.ShowDate();
+                break;
+            case 5:
+                theend = 1;
+                break;
     
-    date.ShowDate();
+        default:
+            break;
+        }
+    }
 
 
 
