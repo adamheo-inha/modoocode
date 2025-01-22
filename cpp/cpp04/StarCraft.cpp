@@ -12,6 +12,7 @@ class Marine {
     Marine();                                       //기본생성자
     Marine(int x, int y, const char* marine_name);  //이름까지 지정
     Marine(int x, int y);   //x,y 좌표에 마린 생성
+    ~Marine();
 
     int attack();                       //데미지를 리턴한다.
     void be_attacked(int damage_earn);   //입는 데미지
@@ -19,7 +20,7 @@ class Marine {
 
     void show_status();                 //상태를 보여준다.
 };
-
+//생성자1
 Marine::Marine() {
     hp = 50;
     coord_x = coord_y = 0;
@@ -27,7 +28,8 @@ Marine::Marine() {
     is_dead = false;
     name = NULL;
 }
-
+//생성자2
+                            //const로 marine_name에 직접 접근하여 값을 변경하는 것을 막음
 Marine::Marine(int x, int y, const char* marine_name) {
     name = new char[strlen(marine_name) + 1];
     strcpy(name, marine_name);
@@ -38,7 +40,7 @@ Marine::Marine(int x, int y, const char* marine_name) {
     damage = 5;
     is_dead = false;
 }
-
+//생성자3
 Marine::Marine(int x, int y) {
     coord_x = x;
     coord_y = y;
@@ -65,6 +67,15 @@ void Marine::show_status() {
     std::cout << "Location : ( " << coord_x << " , " << coord_y  << " ) " << std::endl;
     std::cout << " HP : " << hp << std::endl;
 }
+//소멸자 Destructor
+Marine::~Marine() {
+    std::cout << name << " 의 소멸자 호출 !" << std::endl;
+    //동적으로 할당이 되어었을 경우
+    if (name != NULL) {
+        delete[] name;
+    }
+}
+
 /* 
 int main() {
     Marine marine1(2,3);
