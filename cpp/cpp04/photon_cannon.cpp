@@ -8,7 +8,7 @@ class Photon_Cannon {
 
   public:
   Photon_Cannon(int x, int y);
-  Photon_Cannon(const Photon_Cannon& pc);
+  //Photon_Cannon(const Photon_Cannon& pc);
 
   void show_status();
 };
@@ -20,7 +20,7 @@ Photon_Cannon::Photon_Cannon(int x, int y) {
   coord_y = y;
   damage = 20;
 }
-
+/* 
 // 복사 생성자
                                     //Photon_Cannon& 를 모르겠으면 C++ 2단원 Reference, 참조자 참고
                 //cpp02>reference_argument.cpp의 주석 참고
@@ -35,6 +35,7 @@ Photon_Cannon::Photon_Cannon(const Photon_Cannon& pc) {
   coord_y = pc.coord_y;
   damage = pc.damage;
 }
+ */
 
 void Photon_Cannon::show_status() {
   std::cout << "Photon Cannon " << std::endl;
@@ -46,7 +47,7 @@ void Photon_Cannon::show_status() {
 int main() {
     Photon_Cannon pc1(3, 3);
     Photon_Cannon pc2(pc1);
-    Photon_Cannon pc3 = pc2; //Photon_Cannon pc3(pc2);
+    Photon_Cannon pc3 = pc2; //== Photon_Cannon pc3(pc2);
 
     pc1.show_status();
     pc2.show_status();

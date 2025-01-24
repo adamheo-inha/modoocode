@@ -1,15 +1,14 @@
 #include <iostream>
 
 // 구조체(일종의 Type?)와 값들
-typedef struct Animal{
+struct Animal{
     char name[30];
     int age;
 
     int health;
     int food;
     int clean;
-} Animal;
-
+};
 // 동물 생성 및 초기화
                     // Animal Type의 pointer animal을 인수로 받음)
 void create_animal(Animal *animal) {
