@@ -91,6 +91,8 @@ int main() {
     marine2.show_status();
 
     std::cout << std::endl << "마린 1 이 마린 2 를 두 번 공격! " << std::endl;
+    //<--이분이 먼저 실행되고 marine2를 반환-->
+                                //marine2.be_attacked(marine1.attack()); 가 됨
     marine2.be_attacked(marine1.attack()).be_attacked(marine1.attack());
 
     marine1.show_status();
