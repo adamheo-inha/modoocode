@@ -54,6 +54,8 @@ class MyString {
     
     
 };/////////////////// class END /////////////////////
+
+//생성
 // 문자 하나를 저장
 MyString::MyString(char c) {
     //문자 하나이므로 문자열을 1칸 크기에 메모리 공간을 할당
@@ -98,8 +100,8 @@ void MyString::println() const {
     std::cout << std::endl;
 }
 
-// assing
-//생성
+// assign
+//지정(변경)
 MyString& MyString::assign(const char * str) {
     int str_length = strlen(str);
     if (str_length > memory_capacity) {
@@ -115,7 +117,7 @@ MyString& MyString::assign(const char * str) {
 
     return *this;
 }
-//복사
+
 MyString& MyString::assign(const MyString& str) {
     // 받은 str이 더 길면
     if (str.string_length > memory_capacity) {
