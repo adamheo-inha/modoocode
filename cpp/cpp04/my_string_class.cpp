@@ -39,9 +39,21 @@ class MyString {
     MyString& insert(int loc, const MyString& str);
     MyString& insert(int loc, const char * str);
     MyString& insert(int loc, char c);
+
+    //삭제
+    MyString& erase(int loc, int num);
+
+    //찾기
+    int find(int find_from, const MyString& str) const;
+    int find(int find_from, const char* str) const;
+    int find(int find_from, char c) const;
+
+    //크기 비교
+    int compare(const MyString& str) const;
+
     
     
-};
+};/////////////////// class END /////////////////////
 // 문자 하나를 저장
 MyString::MyString(char c) {
     //문자 하나이므로 문자열을 1칸 크기에 메모리 공간을 할당
@@ -154,7 +166,12 @@ MyString& MyString::insert(int loc, const MyString& str) {
     //기존 문자열이와 삽입되는 문자열의 일이가 할당되 메모리 공간(수)보다 크다면
     if (string_length + str.string_length > memory_capacity) {
         //할당 크기(수)를 바꾼다.
-        memory_capacity = string_length + str.string_length;
+        //기존배가 기존+삽입보다 크면 기존을 두배로하고
+        if (memory_capacity * 2 > string_length + str.string_length)
+            memory_capacity *= 2;
+        // 기존+삽입이 더크면 두개 합한걸로 진행
+        else
+            memory_capacity = string_length + str.string_length;
         // 기존의 문자열을 임시 보관하고 할당된 메모리 크기를 조정한다.
         char * prev_string_content = string_content;
         string_content = new char[memory_capacity];
@@ -223,6 +240,99 @@ MyString& MyString::insert(int loc, char c) {
     MyString temp(c);
     return insert(loc, temp);
 }
+//삭제
+MyString& MyString::erase(int loc, int num) {
+    // loc 의 앞 부터 시작해서 num 문자를 지운다.
+    if (num < 0 || loc < 0 || loc > string_length) return *this;
+
+    // 지운다는 것은 단순히 뒤의 문자들을 앞으로 끌고 온다고
+    // 생각하면 됩니다.
+// 0 1 2 3 4 5 6 7 8
+// [a|b|c|d| | | | | ]
+// erase(1,2) // 1번(2번째) 문자 앞으로 커서 이동 Del 2번(뒤문자삭제) 
+    for (int i = loc + num; i < string_length; i++) {
+//           3   1     2    3    8                  //i == 3,4,5,6,7 5번 진행
+        string_content[i - num] = string_content[i];
+                    //   1 b에                   3 d삽입
+                    //   2 c에                   4 공백 삽입
+                    //   3 d에                   5 공백 삽입
+                    //   4 공백에                 6 공백 삽입
+                    //   5 공백에                 7 공백 삽입
+    }
+
+    string_length -= num;
+    return *this;
+}
+//찾기
+// abcd
+// find(0, 'bc');
+int MyString::find(int find_from, const MyString& str) const {
+    int i, j;
+    // 찾는 문자령열이 0이면 없는 거니 리턴 -1
+    if (str.string_length == 0) return -1;
+    // 찾기 시작할려는 위치부터 기존 문장열-찾는 문자열의 길이를 뺀 위치 까지 시작 위치를 이동하며 반복 
+    for (i = find_from; i <= string_length - str.string_length; i++) {
+//       0   0          0    4               2
+                            //2
+//                      1
+//                      2  총 3번 반복
+        // 시작위치부터 한칸씩 이동하면서 찾는 문자열의 문자와 비교를 반복
+        for (j = 0; j < str.string_length; j++) {
+            //      0   2
+            //      1 총 2번 반복 (2글자니깐)
+            //기존 문자열과 찾는 문자열의 문자를 비교 하여 다른 경우 for 탈출 i 증가
+            if (string_content[i + j] != str.string_content[j]) break;
+                            //0+0 a                         0 b -> break i++
+                            //1+0 b                         0 b -> j++
+                            //1+1 c                         1 c -> j++ for 통과
+        }
+        // 문자가 모두 같으면 다음 if 까지 도착
+        // j와 문자 길이 가 같아짐 if가 성립하고 찾는 문자열의 시작 위치인 i 가 반환됨
+        if (j == str.string_length) return i;
+    }
+// 찾는 문자열이 기존 문자열에 없으면 여기 까지 오고 -1 반환
+  return -1;  // 찾지 못했음
+}
+int MyString::find(int find_from, const char* str) const {
+  MyString temp(str);
+  return find(find_from, temp);
+}
+int MyString::find(int find_from, char c) const {
+  MyString temp(c);
+  return find(find_from, temp);
+}
+
+int MyString::compare(const MyString& str) const {
+    // (*this) - (str) 을 수행해서 그 1, 0, -1 로 그 결과를 리턴한다
+    // 1 은 (*this) 가 사전식으로 더 뒤에 온다는 의미. 0 은 두 문자열
+    // 이 같다는 의미, -1 은 (*this) 가 사전식으로 더 앞에 온다는 의미이다.
+    // 문자열의 짧은 부분까지 비교
+     for (int i = 0; i < std::min(string_length, str.string_length); i++) {
+        if (string_content[i] > str.string_content[i])
+            return 1;
+
+        else if (string_content[i] < str.string_content[i])
+            return -1;
+    }
+
+    // 여기 까지 했는데 끝나지 않았다면 앞 부분 까지 모두 똑같은 것이 된다.
+    // 만일 문자열 길이가 같다면 두 문자열은 아예 같은 문자열이 된다.
+
+    if (string_length == str.string_length) return 0;
+
+    // 참고로 abc 와 abcd 의 크기 비교는 abcd 가 더 뒤에 오게 된다.
+    else if (string_length > str.string_length)
+        return 1;
+
+    return -1;
+}
+
+
+
+
+
+
+/////////////////////////main
 /*
 int main() {
     MyString str1("very very very long string");
@@ -233,6 +343,7 @@ int main() {
   str1.println();
 }
 */
+/*
 int main() {
   MyString str1("very long string");
   MyString str2("<some string inserted between>");
@@ -245,3 +356,16 @@ int main() {
   str1.insert(5, str2);
   str1.println();
 }
+*/
+/*
+//찾기
+int main() {
+  MyString str1("this is a very very long string");
+  std::cout << "Location of first <very> in the string : " << str1.find(0, "very")
+       << std::endl;
+  std::cout << "Location of second <very> in the string : "
+       << str1.find(str1.find(0, "very") + 1, "very") << std::endl;
+}
+*/
+
+//비교
